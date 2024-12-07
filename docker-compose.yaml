@@ -1,0 +1,37 @@
+version: "3.9"
+services:
+  auth:
+    container_name: auth
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+#    networks:
+#      - app-network
+
+  db:
+    image: postgres
+    container_name: db
+    restart: always
+    user: postgres
+    environment:
+      POSTGRES_DB: "db"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d db -U postgres" ]
+    ports:
+      - "5432:5432"
+#    networks:
+#      - app-network
+#
+#
+#networks:
+#  app-network:
+#    name: app-network
